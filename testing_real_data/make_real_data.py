@@ -23,6 +23,25 @@ result = []
 max_total = 0
 
 for pileupcolumn in samfile.pileup('chr21'):
+    if pileupcolumn.n==0:
+        continue
+    if pileupcolumn.pos < 10000000:
+        data_file=data_file1
+    elif pileupcolumn.pos < 20000000:
+        data_file=data_file2
+    elif pileupcolumn.pos < 30000000:
+        data_file=data_file3
+    elif pileupcolumn.pos < 40000000:
+        data_file=data_file4
+    else:
+        data_file=data_file5
+
+    data_file.write("%s, "%pileupcolumn.pos)
+    
+    pos_in_file = int(pileupcolumn.pos / 50) * 51 + pileupcolumn.pos % 50 + 7
+    ref_gene = gene_one_hot[gene_cost[ref_data[pos_in_file].upper()]]
+    data_file.write("%s, %s, %s, %s, "%(ref_gene[0],ret_gene[1],ref_gene[2],ref_gene[3]))
+    
     gene_count=0
     qual_value = [0, 0, 0, 0]
     for pileupread in pileupcolumn.pileups:
@@ -31,41 +50,13 @@ for pileupcolumn in samfile.pileup('chr21'):
             qual = pileupread.alignment.qual[pileupread.query_position]
             gene_count+=1
             qual_value[gene_cost[gene.upper()]] += qual_cost[qual]
-
-    if gene_count == 0:
-        continue
     for i in range(len(qual_value)):
         qual_value[i]/=(41*gene_count)
+    data_file.write("%s, %s, %s, %s, %s\n"%(qual_value[0],qual_value[1],qual_value[2],qual_value[3],gene_count))
+    
     max_total = max(max_total, gene_count)
+data_file5.write("%s"%max_total)
 
-    pos_in_file = int(pileupcolumn.pos / 50) * 51 + pileupcolumn.pos % 50 + 7
-    ref_gene = ref_data[pos_in_file]
-    result+=[[pileupcolumn.pos]+ref_gene+qual_value+[gene_count]]
-
-re_leng=len(result)
-re_part=int(np.ceil(re_leng/5))
-for i in range(re_leng):
-    result[i][9]/=(max_total*2)
-    if i<re_part:
-        data_file1.write("%s, %s, %s, %s, %s, %s, %s, %s, %s, %s\n"%(
-        result[i][0],result[i][1],result[i][2],result[i][3],result[i][4],
-        result[i][5],result[i][6],result[i][7],result[i][8],result[i][9]))
-    elif i<re_part*2:
-        data_file2.write("%s, %s, %s, %s, %s, %s, %s, %s, %s, %s\n"%(
-        result[i][0],result[i][1],result[i][2],result[i][3],result[i][4],
-        result[i][5],result[i][6],result[i][7],result[i][8],result[i][9]))
-    elif i<re_part*3:
-        data_file3.write("%s, %s, %s, %s, %s, %s, %s, %s, %s, %s\n"%(
-        result[i][0],result[i][1],result[i][2],result[i][3],result[i][4],
-        result[i][5],result[i][6],result[i][7],result[i][8],result[i][9]))
-    elif i<re_part*4:
-        data_file4.write("%s, %s, %s, %s, %s, %s, %s, %s, %s, %s\n"%(
-        result[i][0],result[i][1],result[i][2],result[i][3],result[i][4],
-        result[i][5],result[i][6],result[i][7],result[i][8],result[i][9]))
-    else:
-        data_file5.write("%s, %s, %s, %s, %s, %s, %s, %s, %s, %s\n"%(
-        result[i][0],result[i][1],result[i][2],result[i][3],result[i][4],
-        result[i][5],result[i][6],result[i][7],result[i][8],result[i][9]))
 ret_file.close()
 samfile.close()
 data_file1.close()
