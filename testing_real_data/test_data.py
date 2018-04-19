@@ -16,23 +16,20 @@ test1=open('real_qsum1.csv','r')
 test2=open('real_qsum2.csv','r')
 test3=open('real_qsum3.csv','r')
 test4=open('real_qsum4.csv','r')
-test5=open('real_qsum5.csv','r')
-max_gene_count=test5.read().split('\n')[-1]
+max_gene_count=test4.read().split('\n')[-1]
 
 ret=open('ret_sum.txt','w')
 Y_pred=[]
 pos_dic={}
-for i in range(5):
+for i in range(4):
     if i==0:
         testfile=test1
     elif i==1:
         testfile=test2
     elif i==2:
         testfile=test3
-    elif i==3:
-        testfile=test4
     else:
-        testfile=test5
+        testfile=test4
     test_set=testfile.read().split('\n')[:-1]
     for j in range(len(test_set)):
         pos=int(test_set[j].split(', ')[0])
@@ -50,7 +47,7 @@ for i in range(5):
 pred_snp=[i for i,x in enumerate(Y_pred) if x==0]
 for i in range(len(pred_snp)):
     for pos in list(pos_dic.keys()):
-        if np.array_equal(xy_test[pred_snp[i]],pos_dic[pos]):
+        if np.array_equal(test_set[pred_snp[i]],pos_dic[pos]):
             ret.write("%s",pos)
             if max(pos_dic[pos][4:8])==pos_dic[pos][4]:
                 ret.write(", A\n")
@@ -64,5 +61,4 @@ test1.close()
 test2.close()
 test3.close()
 test4.close()
-test5.close()
 ret.close()
