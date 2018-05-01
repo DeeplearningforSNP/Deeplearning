@@ -23,7 +23,7 @@ test_set=test.read().split('\n')[:-1]
 for i in range(len(test_set)):
     data=test_set[i].split(', ')[1:]
     data[8]/=(max_gene_count*2)
-    check_list+=[[int(test_est[i].split(', ')[0])]+data[4:8]]
+    check_list+=[[int(test_set[i].split(', ')[0])]+data[4:8]]
     test_set[i]=data
 test_set=np.array(test_set,dtype=np.float32)
 
