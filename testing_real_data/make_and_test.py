@@ -3,7 +3,8 @@ import pysam
 import random
 import numpy as np
 
-batch_size=50
+seq_leng=10
+batch_size=1000
 
 ref_file = open('hg19_chr21.fa', 'r')
 ref_data = ref_file.read()
@@ -61,7 +62,7 @@ for pileupcolumn in samfile.pileup('chr21'):
     check_list+=[[pileupcolumn.pos]+qual_value]
     data_list+=[ref_gene+qual_value+[gene_count,gene_power]]
     if len(data_list)==batch_size:
-        data_list=np.array(data_list,dtype=np.float32)
+        data_list=np.array(data_list,dtype=np.float32).reshape(-1,seq_leng,1)
         Y_pred+=list(sess.run(tf.argmax(prediction,1),feed_dict={X:data_list}))
         data_list=[]
 
@@ -72,13 +73,13 @@ if len(data_list)!=0:
 pred_snp=[i for i,x in enumerate(Y_pred) if x==0]
 for i in range(len(pred_snp)):
     ret.write("%s"%check_list[i][0])
-    if max(check_list[i][1:])==check_list[1]:
+    if max(check_list[i][1:])==check_list[i][1]:
         ret.write(", A\n")
-    elif max(check_list[i][1:])==check_list[2]:
+    elif max(check_list[i][1:])==check_list[i][2]:
         ret.write(", T\n")
-    elif max(check_list[i][1:])==check_list[3]:
+    elif max(check_list[i][1:])==check_list[i][3]:
         ret.write(", G\n")
-    elif max(check_list[i][1:])==check_list[4]:
+    elif max(check_list[i][1:])==check_list[i][4]:
         ret.write(", C\n")
 
 ret_file.close()
