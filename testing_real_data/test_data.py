@@ -13,7 +13,8 @@ X=graph.get_tensor_by_name('X:0')
 prediction=graph.get_tensor_by_name('prediction:0')
 
 test=open('real_qsum1.csv','r')
-max_gene_count=test.read().split('\n')[-1]
+line = open('real_qsum4.csv','r')
+max_gene_count=line.read().split('\n')[-1]
 
 ret=open('ret_sum.txt','w')
 Y_pred=[]
@@ -21,13 +22,17 @@ check_list=[]
 
 test_set=test.read().split('\n')[:-1]
 for i in range(len(test_set)):
+    if(i%1000000==0):
+        print(i)
     data=test_set[i].split(', ')[1:]
-    data[8]/=(max_gene_count*2)
+    data[8]=int(data[8])/(int(max_gene_count)*2)
     check_list+=[[int(test_set[i].split(', ')[0])]+data[4:8]]
     test_set[i]=data
 test_set=np.array(test_set,dtype=np.float32)
 
 for i in range(int(np.ceil(len(test_set)/batch_size))):
+    if(i%1000 == 0):
+        print(i)
     test_batch=test_set[i*batch_size:i*batch_size+batch_size].reshape(-1,seq_leng,1)
     Y_pred+=list(sess.run(tf.argmax(prediction,1),feed_dict={X:test_batch}))
 
