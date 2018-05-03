@@ -14,13 +14,14 @@ prediction=graph.get_tensor_by_name('prediction:0')
 
 test=open('real_qsum1.csv','r')
 line = open('real_qsum4.csv','r')
+test_data=test.read()
+test_set=test_data.split('\n')[:-1]
 max_gene_count=line.read().split('\n')[-1]
 
-ret=open('ret_sum.txt','w')
+ret=open('ret_test.txt','w')
 Y_pred=[]
 check_list=[]
 
-test_set=test.read().split('\n')[:-1]
 for i in range(len(test_set)):
     if(i%1000000==0):
         print(i)
@@ -38,14 +39,14 @@ for i in range(int(np.ceil(len(test_set)/batch_size))):
 
 pred_snp=[i for i,x in enumerate(Y_pred) if x==0]
 for i in range(len(pred_snp)):
-    ret.write("%s"%check_list[i][0])
-    if max(check_list[i][1:])==check_list[i][1]:
+    ret.write("%s"%check_list[pred_snp[i]][0])
+    if max(check_list[pred_snp[i]][1:])==check_list[pred_snp[i]][1]:
         ret.write(", A\n")
-    elif max(check_list[i][1:])==check_list[i][2]:
+    elif max(check_list[pred_snp[i]][1:])==check_list[pred_snp[i]][2]:
         ret.write(", T\n")
-    elif max(check_list[i][1:])==check_list[i][3]:
+    elif max(check_list[pred_snp[i]][1:])==check_list[pred_snp[i]][3]:
         ret.write(", G\n")
-    elif max(check_list[i][1:])==check_list[i][4]:
+    elif max(check_list[pred_snp[i]][1:])==check_list[pred_snp[i]][4]:
         ret.write(", C\n")
 test.close()
 ret.close()
