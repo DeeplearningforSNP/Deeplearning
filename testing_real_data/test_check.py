@@ -1,4 +1,4 @@
-snp_file=open('snp_data','r')
+snp_file=open('snp_data.txt','r')
 snp_line=snp_file.read().split('\n')
 snp_data=[0]*10000
 for i in range(10000):
@@ -23,3 +23,5 @@ for i in snp_pos:
         snp_dic['find another']+=1
 snp_dic['not find']=len(snp_data)-len(learn_data)+snp_dic['find another']
 print(snp_dic)
+snp_file.close()
+learn_file.close()

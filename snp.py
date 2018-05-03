@@ -1,10 +1,10 @@
 import random
 
-input_file = open('hg19_chr21.txt', 'r')
+input_file = open('hg19_chr21.fa', 'r')
 
 data = input_file
 output_file = open('ret.txt', 'w')
-snp = open('snp.txt', 'w')
+snp = open('snp.fa', 'w')
 op = ""
 agtc = ['a', 'g', 't', 'c', 'A', 'G', 'T', 'C']
 data = input_file.read()
@@ -29,7 +29,7 @@ while True:
             break
     while True:
         change = random.choice(agtc)
-        if (data[temp].lower() != change):
+        if (data[temp].lower() != change.lower()):
             break
 
     row = int(rand[i] / 51) + 2

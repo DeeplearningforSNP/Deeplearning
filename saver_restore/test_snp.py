@@ -2,10 +2,10 @@ import tensorflow as tf
 import numpy as np
 from collections import Counter
 
-batch_size=50
+batch_size=100
 seq_leng=9
 
-test=open('real_test.csv','r')
+test=open('qsum_data.csv','r')
 xy_test=test.read().split('\n')
 pos_dic={}
 test_pos=[]
@@ -32,7 +32,7 @@ ret=open('ret_sum.txt','w')
 Y_real=[]
 Y_pred=[]
 accu=0
-for i in range(int(np.ceil(4650/batch_size))):
+for i in range(int(np.ceil(78482/batch_size))):
     test_batch=xy_test[i*batch_size:i*batch_size+batch_size]
     test_x,test_y=test_batch[:,:-2].reshape(-1,seq_leng,1),test_batch[:,-2:]
 
@@ -41,7 +41,7 @@ for i in range(int(np.ceil(4650/batch_size))):
     Y_real+=list(sess.run(tf.argmax(Y,1),feed_dict={Y:test_y}))
     Y_pred+=list(sess.run(tf.argmax(prediction,1),feed_dict={X:test_x}))
 
-print('accuracy : ',accu/int(np.ceil(4650/batch_size)))
+print('accuracy : ',accu/int(np.ceil(78482/batch_size)))
 
 Y_ret=2*np.array(Y_real)+np.array(Y_pred)
 print(Counter(Y_ret))
