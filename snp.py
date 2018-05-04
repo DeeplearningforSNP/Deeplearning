@@ -9,6 +9,7 @@ op = ""
 agtc = ['a', 'g', 't', 'c', 'A', 'G', 'T', 'C']
 data = input_file.read()
 rand = []
+op = data
 i = 0
 
 while True:
@@ -36,9 +37,9 @@ while True:
     col = rand[i] % 51 + 1
     wr = "%d(%d/%d) = %c -> %c\n" % ((row - 2) * 50 + col, row, col, data[temp], change)
     output_file.write(wr)
-    op = data[:temp] + change + data[temp + 1:]
+    op = op[:temp] + change + op[temp + 1:]
     i += 1
-    if (i == 100):
+    if (i == 10000):
         break
 
 snp.write(op)
