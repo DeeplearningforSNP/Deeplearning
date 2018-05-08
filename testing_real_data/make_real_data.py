@@ -9,7 +9,10 @@ data_file1 = open('real_qsum1.csv', 'w')
 data_file2 = open('real_qsum2.csv', 'w')
 data_file3 = open('real_qsum3.csv', 'w')
 data_file4 = open('real_qsum4.csv', 'w')
-
+data_file5 = open('real_qsum5.csv', 'w')
+data_file6 = open('real_qsum6.csv', 'w')
+data_file7 = open('real_qsum7.csv', 'w')
+data_file8 = open('real_qsum8.csv', 'w')
 qual_cost = {'!': 0, '"': 1, '#': 2, '$': 3, '%': 4, '&': 5, "'": 6,
              '(': 7, ')': 8, '*': 9, '+': 10, ',': 11, '-': 12, '.': 13,
              '/': 14, '0': 15, '1': 16, '2': 17, '3': 18, '4': 19, '5': 20,
@@ -39,14 +42,22 @@ for pileupcolumn in samfile.pileup('chr21'):
     for i in range(len(qual_value)):
         qual_value[i]/=(41*gene_count)
     
-    if pileupcolumn.pos < 20000000:
+    if pileupcolumn.pos < 15000000:
         data_file=data_file1
-    elif pileupcolumn.pos < 30000000:
+    elif pileupcolumn.pos < 20000000:
         data_file=data_file2
-    elif pileupcolumn.pos < 40000000:
+    elif pileupcolumn.pos < 25000000:
         data_file=data_file3
+    elif pileupcolumn.pos < 30000000:
+        data_file = data_file4
+    elif pileupcolumn.pos < 35000000:
+        data_file=data_file5
+    elif pileupcolumn.pos < 40000000:
+        data_file=data_file6
+    elif pileupcolumn.pos < 45000000:
+        data_file=data_file7
     else:
-        data_file=data_file4
+        data_file=data_file8
 
     data_file.write("%s, "%pileupcolumn.pos)
     
@@ -59,7 +70,7 @@ for pileupcolumn in samfile.pileup('chr21'):
 if max_total!=0:
     data_file4.write("%s"%max_total)
 
-ret_file.close()
+ref_file.close()
 samfile.close()
 data_file1.close()
 data_file2.close()
