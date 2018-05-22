@@ -4,7 +4,7 @@ import random
 ref_file=open('hg19_chr21.fa','r')
 ref_data=ref_file.read()
 
-snp_file=open('snp_data.txt','r')
+snp_file=open('read.txt','r')
 snp_data=snp_file.read()
 snp_line=snp_data.split('\n')
 snp_pos=[0]*10000
@@ -89,23 +89,24 @@ snp_num=0
 non_snp=0
 for num in range(len(data_list)):
     data_set=data_list[num].split('/')
-    if int(data_set[7])==0:
-        if non_snp < 9000:
-            write_data(train_file,num,gene_one_hot,gene_cost,pos_dic,data_list,data_set)
-        elif non_snp < 10850:
+#    if int(data_set[7])==0:
+#        if non_snp < 8000:
+    write_data(train_file,num,gene_one_hot,gene_cost,pos_dic,data_list,data_set)
+    '''
+        elif non_snp < 9750:
             write_data(validation_file,num,gene_one_hot,gene_cost,pos_dic,data_list,data_set)
-        elif non_snp < 15550:
+        elif non_snp < 15000:
             write_data(test_file,num,gene_one_hot,gene_cost,pos_dic,data_list,data_set)
         non_snp+=1
     else:
-        if snp_num < 9000:
+        if snp_num < 8000:
             write_data(train_file,num,gene_one_hot,gene_cost,pos_dic,data_list,data_set)
-        elif snp_num < 9150:
+        elif snp_num < 8250:
             write_data(validation_file,num,gene_one_hot,gene_cost,pos_dic,data_list,data_set)
         else:
             write_data(test_file,num,gene_one_hot,gene_cost,pos_dic,data_list,data_set)
         snp_num+=1
-
+    '''
 ref_file.close()
 snp_file.close()
 samfile.close()
