@@ -10,9 +10,9 @@ snp_pos = [0] * 10000
 
 samfile = pysam.AlignmentFile('read.bam', 'rb')
 
-train_file = open('train_qsum.csv', 'w')
-validation_file = open('val_qsum.csv', 'w')
-test_file = open('test_qsum.csv', 'w')
+train_file = open('learn_train.csv', 'w')
+validation_file = open('learn_val.csv', 'w')
+test_file = open('learn_test.csv', 'w')
 
 qual_cost = {'!': 0, '"': 1, '#': 2, '$': 3, '%': 4, '&': 5, "'": 6,
              '(': 7, ')': 8, '*': 9, '+': 10, ',': 11, '-': 12, '.': 13,
@@ -51,8 +51,8 @@ for i in range(10000):
                 qual_value[gene.upper()] += qual_cost[qual]
         if gene_count == 0:
             continue
-        for i in qual_value.keys():
-            qual_value[i]/=(41*gene_count)
+        for k in qual_value.keys():
+            qual_value[k]/=(41*gene_count)
         qual_data=[qual_value['A'],qual_value['T'],qual_value['G'],qual_value['C']]
 
         max_total = max(max_total, gene_count)
@@ -78,7 +78,7 @@ def write_data(fname, gene_pos, gene_one_hot, data_set, max_total):
     fname.write("%s, %s, %s, %s, %s, " % (
         gene_pos, ref_one_hot[0], ref_one_hot[1], ref_one_hot[2], ref_one_hot[3]))
     fname.write("%s, %s, %s, %s, " % (data_set[1], data_set[2], data_set[3], data_set[4]))
-    fname.write("%s, %s, %s\n" % (int(data_set[5]) / (max_total), data_set[6], int(not int(data_set[6]))))
+    fname.write("%s, %s, %s\n" % (int(data_set[5]) / (max_total*2), data_set[6], int(not int(data_set[6]))))
 
 snp_num = 0
 non_snp = 0
@@ -86,21 +86,22 @@ for num in range(len(data_list)):
     data_set = data_list[num].split('/')
     gene_pos=pos_dic[data_list[num]]
     if int(data_set[6]) == 0:
-        if non_snp < 7000:
+        if non_snp < 8000:
             write_data(train_file, gene_pos, gene_one_hot, data_set, max_total)
-        elif non_snp < 8500:
+        elif non_snp < 9600:
             write_data(validation_file, gene_pos, gene_one_hot, data_set, max_total)
-        elif non_snp < 13000:
+        elif non_snp < 14600:
             write_data(test_file, gene_pos, gene_one_hot, data_set, max_total)
         non_snp += 1
     else:
-        if snp_num < 7000:
+        if snp_num < 8000:
             write_data(train_file, num, gene_one_hot, data_set, max_total)
-        elif snp_num < 7500:
+        elif snp_num < 8400:
             write_data(validation_file, gene_pos, gene_one_hot, data_set, max_total)
         else:
             write_data(test_file, gene_pos, gene_one_hot, data_set, max_total)
         snp_num += 1
+
 ref_file.close()
 snp_file.close()
 samfile.close()

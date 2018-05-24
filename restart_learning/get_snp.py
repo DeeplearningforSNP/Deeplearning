@@ -3,8 +3,8 @@ import random
 ref_file=open('hg19_chr21.fa','r')
 data=ref_file.read()
 
-snp_file=open('snp.fa','w')
-snp_info=open('snp_info.txt','w')
+snp_file=open('read.fa','w')
+snp_info=open('read.txt','w')
 
 change={'A':'tTgGcC', 'T':'aAgGcC', 'G':'aAtTcC', 'C':'aAtTgG'}
 num=0
@@ -15,8 +15,8 @@ while True:
     if temp >= 49092500:
         continue
 
-    gene=data[temp].lower()
-    if not gene in 'atgc':
+    gene=data[temp].upper()
+    if not gene in 'ATGC':
         continue
 
     pos=temp-7
@@ -31,13 +31,14 @@ while True:
     snp=random.choice(change[gene])
 
     row=int(gene_pos[num]/51)+2
-    col=gene_pos[i]%51+1
+    col=gene_pos[num]%51+1
     snp_info.write("%d(%d/%d) = %c -> %c\n"%((row-2)*50+col,row,col,data[temp],snp))
     data=data[:temp]+snp+data[temp+1:]
     num+=1
     if num==10000:
         break
+snp_file.write("%s"%data)
 
 ref_file.close()
 snp_file.close()
-info_file.close()
+snp_info.close()
